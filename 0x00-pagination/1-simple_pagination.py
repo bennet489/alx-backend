@@ -5,7 +5,7 @@ value 10 """
 
 import csv
 import math
-from typing import List
+from typing import List, Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
@@ -16,13 +16,9 @@ def index_range(page: int, page_size: int) -> Tuple[int, int]:
         page(int): number of page to return
         page_size(int): items per page number
     Return: tuple(start, end) """
-    start = 0
-    end = 0
-    for i in range(page):
-        start = end
-        end += page_size
-
-    return (start, end)
+    start = (page - 1) * page_size
+    end = start + page_size
+    return start, end
 
 
 class Server:
@@ -51,11 +47,15 @@ class Server:
             greater than 0)
         Return:
             list of list containing required data """
-        assert type(page) == int and typ(page_size) == int and\
-            page > 0 and page_size > 0
-        data = self.dataset()
-        try:
-            index = index_range(page, page_size)
-            return data[index[0]: index[1]]
-        except IndexError:
+        assert isinstance(page, int) and isinstance(page_size, int), \
+            "Both page and page_size must be integers."
+        assert page > 0 and page_size > 0, \
+            "Both page and page_size must be greater than 0."
+
+        start_index, end_index = index_range(page, page_size)
+        dataset = self.dataset()
+
+        if start_index >= len(dataset):
             return []
+
+        return dataset[start_index:end_index]
