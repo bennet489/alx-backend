@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-""" Implement a method named get_page that takes two integer
-arguments page with defautl value 1 and page_size with default
-value 10 """
+""" 1-simple_pagination module """
 
 import csv
 import math
@@ -9,44 +7,50 @@ from typing import List, Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
-    """two args are passed and returns tuple size of two
-    containing the start and end indices relating to the range
-    of indices to return in a list for the said pagination params
+    """
+    Returns a tuple of size two containing a start index and an end index
+    corresponding to the range of indexes to return in a list for those
+    particular pagination parameters.
     Args:
-        page(int): number of page to return
-        page_size(int): items per page number
-    Return: tuple(start, end) """
+        page - page number
+        page_size - page size
+    Return:
+        tuple
+    """
     start = (page - 1) * page_size
     end = start + page_size
     return start, end
 
 
 class Server:
-    """ A server class to paginate database of popular baby names."""
+    """Server class to paginate a database of popular baby names.
+    """
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
         self.__dataset = None
 
     def dataset(self) -> List[List]:
-        """Cached dataset """
+        """Cached dataset
+        """
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
-            self.__data = dataset[1:]
+            self.__dataset = dataset[1:]
 
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """function will take two int args page = 1 and page_size = 10
-        and return the requested page of the dataset
+        """
+        Given a page number and page size,
+        returns the right page of the dataset
         Args:
-            page(int): requested page (must be positive value greater than 0)
-            page_size(int): number of items per page(must be positive value
-            greater than 0)
+            page - page
+            page_size - size of page
         Return:
-            list of list containing required data """
+            right page of the dataset, empty list if out of range
+        """
         assert isinstance(page, int) and isinstance(page_size, int), \
             "Both page and page_size must be integers."
         assert page > 0 and page_size > 0, \
